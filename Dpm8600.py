@@ -48,12 +48,12 @@ class Dpm8600:
 	def do(self, cmd):
 		cmd = ":01" + cmd + ","
 		self.debug(cmd, DEBUG)
-		bytes_written = self.ser.write(cmd + "\r\n")
+		bytes_written = self.ser.write((cmd + "\r\n").encode())
 
 		# capture the ACK instead of using a timer
 		buf = ""
 		while True:
-	 		buf = buf + self.ser.read(1)
+			buf = buf + self.ser.read(1).decode()
 			if len(buf) > 1 and buf[-4:] == "ok\r\n":
 				self.debug("ACK", DEBUG)
 				return
@@ -61,10 +61,10 @@ class Dpm8600:
 	def get(self, cmd):
 		cmd = ":01" + cmd + ","
 		self.debug(cmd, DEBUG)
-		bytes_written = self.ser.write(cmd + "\r\n")
+		bytes_written = self.ser.write((cmd + "\r\n").encode())
 		buf = ""
 		while True:
-	 		buf = buf + self.ser.read(1)
+			buf = buf + self.ser.read(1).decode()
 			if len(buf) > 1 and buf[-4:] == "ok\r\n":
 				buf = "" # Ignore command acks
 			if len(buf) > 1 and buf[-2:] == "\r\n":
@@ -139,4 +139,4 @@ class Dpm8600:
 
 	def debug(self, msg, lvl = INFO):
 		if self.verbosity >= lvl:
-			print msg
+			print(msg) 
